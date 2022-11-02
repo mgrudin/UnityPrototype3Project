@@ -5,9 +5,10 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody playerRb;
-    public float jumpForce = 10;
+    public float jumpForce = 5;
     public float gravityModifier;
     public bool isOnGround = true;
+    private bool canDoubleJump = false;
     public bool gameOver = false;
     private Animator playerAnim;
     public ParticleSystem explosionParticle;
@@ -28,14 +29,29 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isOnGround && !gameOver)
+        if (Input.GetKeyDown(KeyCode.Space) && !gameOver)
         {
-            playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isOnGround = false;
-            playerAnim.SetTrigger("Jump_trig");
-            dirtParticle.Stop();
-            playerAudio.PlayOneShot(jumpSound, 1.0f);
+            if (isOnGround)
+            {
+                isOnGround = false;
+                canDoubleJump = true;
+                Jump();
+            }
+            else if (canDoubleJump)
+            {
+                canDoubleJump = false;
+                Jump();
+
+            }
         }
+    }
+
+    private void Jump()
+    {
+        playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        playerAnim.SetTrigger("Jump_trig");
+        dirtParticle.Stop();
+        playerAudio.PlayOneShot(jumpSound, 1.0f);
     }
 
     private void OnCollisionEnter(Collision collision)
