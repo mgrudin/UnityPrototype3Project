@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public float gravityModifier;
     public bool isOnGround = true;
     private bool canDoubleJump = false;
+    public bool isDash = false;
     public bool gameOver = false;
     private Animator playerAnim;
     public ParticleSystem explosionParticle;
@@ -43,6 +44,16 @@ public class PlayerController : MonoBehaviour
                 Jump();
 
             }
+        }
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            isDash = true;
+            playerAnim.SetFloat("Speed_Multiplier", 2.0f);
+        }
+        else
+        {
+            isDash = false;
+            playerAnim.SetFloat("Speed_Multiplier", 1.0f);
         }
     }
 
